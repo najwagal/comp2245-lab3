@@ -38,24 +38,23 @@ buildBoard();
 
 let turnedCards = [];
 let moves = 0;
+let waiting = false;
 
 const board = document.getElementById("board");
 const movesDisplay = document.getElementById("moves");
 const statusDisplay = document.getElementById("status");
 
-// ... (keep fruits, shuffle, and buildBoard functions above) ...
 
 board.addEventListener("click", (event) => {
     const card = event.target.closest("button");
 
-    // Check that it is a card and isn't already flipped or matched
-    if (!card || card.classList.contains("flipped") || card.classList.contains("matched")) {
+    if (waiting || !card || card.classList.contains("flipped") || card.classList.contains("matched")) {
         return;
     }
 
     const index = card.dataset.index;
     const fruit = deck[index];
-    
+
     card.textContent = fruit.symbol;
     card.classList.add("flipped");
     card.setAttribute("aria-label", `Card ${parseInt(index) + 1}, ${fruit.name}`);
@@ -76,7 +75,20 @@ board.addEventListener("click", (event) => {
             statusDisplay.textContent = "That's a pair!";
             turnedCards = [];
         } else {
-            statusDisplay.textContent = "Not a pair.";
+            statusDisplay.textContent = "Not a pair. Try again.";
+            waiting = true;
+            setTimeout(() => {
+                card1.card.textContent = "";
+                card1.card.classList.remove("flipped");
+                card1.card.setAttribute("aria-label", `Card ${parseInt(card1.card.dataset.index) + 1}, face down`);
+
+                card2.card.textContent = "";
+                card2.card.classList.remove("flipped");
+                card2.card.setAttribute("aria-label", `Card ${parseInt(card2.card.dataset.index) + 1}, face down`);
+
+                turnedCards = [];
+                waiting = false; 
+            }, 1000);
         }
     }
 });
