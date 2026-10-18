@@ -4,6 +4,6 @@ This is Lab 3 for Abigail Galloway.
 
 ## Testing
 The hmtl was tested in the following browsers:
-- Google Chrome
-- Mozilla Firefox
-- Microsoft Edge
+- **Google Chrome**
+- **Mozilla Firefox**
+- **Microsoft Edge**
