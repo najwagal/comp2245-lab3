@@ -39,11 +39,11 @@ buildBoard();
 let turnedCards = [];
 let moves = 0;
 let waiting = false;
+let matchedPairs = 0;
 
 const board = document.getElementById("board");
 const movesDisplay = document.getElementById("moves");
 const statusDisplay = document.getElementById("status");
-
 
 board.addEventListener("click", (event) => {
     const card = event.target.closest("button");
@@ -72,11 +72,20 @@ board.addEventListener("click", (event) => {
             card2.card.classList.add("matched");
             card1.card.disabled = true;
             card2.card.disabled = true;
-            statusDisplay.textContent = "That's a pair!";
+            
+            matchedPairs++;
             turnedCards = [];
+
+            if (matchedPairs === 8) {
+                statusDisplay.textContent = `You found all the pairs in ${moves} moves!`;
+                statusDisplay.classList.add("you-won");
+            } else {
+                statusDisplay.textContent = "That's a pair!";
+            }
         } else {
             statusDisplay.textContent = "Not a pair. Try again.";
             waiting = true;
+
             setTimeout(() => {
                 card1.card.textContent = "";
                 card1.card.classList.remove("flipped");
@@ -87,7 +96,7 @@ board.addEventListener("click", (event) => {
                 card2.card.setAttribute("aria-label", `Card ${parseInt(card2.card.dataset.index) + 1}, face down`);
 
                 turnedCards = [];
-                waiting = false; 
+                waiting = false;
             }, 1000);
         }
     }
