@@ -35,3 +35,28 @@ function buildBoard() {
 }
 
 buildBoard();
+
+let turnedCards = [];
+const board = document.getElementById("board");
+
+board.addEventListener("click", (event) => {
+    const card = event.target.closest("button");
+    if (!card) {
+        return;
+    }
+
+    if (card.classList.contains("flipped")) {
+        return;
+    }
+
+    const index = card.dataset.index;
+    const fruit = deck[index];
+
+    card.textContent = fruit.symbol;
+
+    card.classList.add("flipped");
+
+    card.setAttribute("aria-label", `Card ${parseInt(index) + 1}, ${fruit.name}`);
+
+    turnedCards.push({ card, fruit });
+});
