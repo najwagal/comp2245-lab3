@@ -18,10 +18,18 @@ function shuffle(array) {
 }
 
 let deck = [];
+let turnedCards = [];
+let moves = 0;
+let waiting = false;
+let matchedPairs = 0;
+let timeoutId = null;
+
+const board = document.getElementById("board");
+const movesDisplay = document.getElementById("moves");
+const statusDisplay = document.getElementById("status");
+const newGameButton = document.getElementById("new-game");
 
 function buildBoard() {
-    const board = document.getElementById("board");
-    
     deck = shuffle([...fruits, ...fruits]);
 
     deck.forEach((fruit, i) => {
@@ -35,15 +43,6 @@ function buildBoard() {
 }
 
 buildBoard();
-
-let turnedCards = [];
-let moves = 0;
-let waiting = false;
-let matchedPairs = 0;
-
-const board = document.getElementById("board");
-const movesDisplay = document.getElementById("moves");
-const statusDisplay = document.getElementById("status");
 
 board.addEventListener("click", (event) => {
     const card = event.target.closest("button");
@@ -86,7 +85,7 @@ board.addEventListener("click", (event) => {
             statusDisplay.textContent = "Not a pair. Try again.";
             waiting = true;
 
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 card1.card.textContent = "";
                 card1.card.classList.remove("flipped");
                 card1.card.setAttribute("aria-label", `Card ${parseInt(card1.card.dataset.index) + 1}, face down`);
@@ -97,7 +96,28 @@ board.addEventListener("click", (event) => {
 
                 turnedCards = [];
                 waiting = false;
+                timeoutId = null;
             }, 1000);
         }
     }
+});
+
+newGameButton.addEventListener("click", () => {
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+    }
+    waiting = false;
+
+    board.replaceChildren();
+
+    moves = 0;
+    movesDisplay.textContent = moves;
+    turnedCards = [];
+    matchedPairs = 0;
+
+    statusDisplay.textContent = "Turn over two cards to find a matching pair.";
+    statusDisplay.classList.remove("you-won");
+
+    buildBoard();
 });
